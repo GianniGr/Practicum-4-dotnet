@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Xml", "Linq2Xml\Linq2Xml.csproj", "{BE6AE933-D307-43E9-94B2-E17C482A8627}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ling2XmlTests", "Ling2XmlTests\Ling2XmlTests.csproj", "{32ABD369-38E5-45AE-BF35-E5BA8661DCDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE6AE933-D307-43E9-94B2-E17C482A8627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6AE933-D307-43E9-94B2-E17C482A8627}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6AE933-D307-43E9-94B2-E17C482A8627}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6AE933-D307-43E9-94B2-E17C482A8627}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32ABD369-38E5-45AE-BF35-E5BA8661DCDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32ABD369-38E5-45AE-BF35-E5BA8661DCDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32ABD369-38E5-45AE-BF35-E5BA8661DCDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32ABD369-38E5-45AE-BF35-E5BA8661DCDA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
