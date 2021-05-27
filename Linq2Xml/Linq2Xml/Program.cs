@@ -54,22 +54,27 @@ namespace Linq2Xml
             {
                 String response = await client2.GetStringAsync(@"http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=awake&artist=Dream%20Theater&api_key=b5cbf8dcef4c6acfc5698f8709841949");
 
+                Cd cd = createCds()[0];
                 string ownXml = TransformIntoXmlString(createCds());
 
                 XDocument lfmDoc = XDocument.Parse(response);
                 XDocument ownDoc = XDocument.Parse(ownXml);
 
                 var query =
-                    from lfmTrack in lfmDoc.Descendants("tracks").Elements()
-                        let lfmTrackName = lfmTrack.Element("name")
-                        let lfmTrackArtist = lfmTrack.Element("artist")
+                  from tr in lfmDoc.Descendants("track")
+                  where !(from tr1 in cd
+                          select tr1.Title)
+                    .Contains(tr.Element("name").Value) && (
+                    from tr1 in cd
+                    select tr1.Artist)
+                    .Contains(tr.Element("artist").Element("name").Value)
+                  select tr;
 
-                    from ownTrack in ownDoc.Descendants("tracks").Elements()
-                        let ownTrackName = ownTrack.Element("name")
-                        let ownTrackArtist = ownTrack.Element("artist")
-                    where lfmTrackName.Value != ownTrackName.Value && lfmTrackArtist.Value != ownTrackArtist.Value
 
-                    select lfmTrack;
+                foreach (XElement x in query)
+                {
+                    Console.WriteLine(x);
+                }
 
 
             }
