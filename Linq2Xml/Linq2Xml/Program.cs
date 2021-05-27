@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Linq2Xml
@@ -19,11 +22,41 @@ namespace Linq2Xml
     
     public static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main()
         {
             List<Cd> cds = createCds();
             string testXml = TransformIntoXmlString(cds);
-            Console.WriteLine(testXml);
+            //Console.WriteLine(testXml);
+
+            HttpClient client = new();
+            try
+            {
+                String response = await client.GetStringAsync(@"http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=awake&artist=Dream%20Theater&api_key=b5cbf8dcef4c6acfc5698f8709841949");
+
+                var xmlDoc = XDocument.Parse(response);
+
+                var query = from tracksDoc in xmlDoc.Elements("lfm").Elements("Album").Elements("tracks")
+                            select tracksDoc;
+
+                XElement selectedTracks = query.SingleOrDefault();
+
+                Console.WriteLine(selectedTracks);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("Message :{0} ", e);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Message :{0} ", e);
+            }
+
+    }
+
+
+        public static bool loadTracks()
+        {
+            return true;
         }
 
         public static string TransformIntoXmlString(List<Cd> cds)
@@ -74,5 +107,5 @@ namespace Linq2Xml
             List<Cd> cds = new List<Cd> { testCD };
             return cds;
         }
-    }
+    }  
 }
