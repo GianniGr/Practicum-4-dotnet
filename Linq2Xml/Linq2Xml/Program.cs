@@ -24,103 +24,60 @@ namespace Linq2Xml
     {
         public static async Task Main()
         {
-            string testXml = TransformIntoXmlString(createCds());
+            string testXml = TransformIntoXmlString(createCd());
             Console.WriteLine(testXml);
             Console.WriteLine("\n");
 
 
-         //HttpClient client = new();
-         //try
-         //{
-         //    String response = await client.GetStringAsync(@"http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=awake&artist=Dream%20Theater&api_key=b5cbf8dcef4c6acfc5698f8709841949");
-         //
-         //    XDocument lfmDoc = XDocument.Parse(response);
-         //
-         //    var query =
-         //        from track in lfmDoc.Descendants("tracks")
-         //        select track;
-         //
-         //    XElement selectedTracks = query.SingleOrDefault();
-         //    Console.WriteLine(selectedTracks);
-         //}
-         //catch (HttpRequestException e)
-         //{
-         //    Console.WriteLine("Message :{0} ", e);
-         //}
-
-
-            HttpClient client2 = new();
-            try
-            {
-                String response = await client2.GetStringAsync(@"http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=awake&artist=Dream%20Theater&api_key=b5cbf8dcef4c6acfc5698f8709841949");
-
-                Cd cd = createCds()[0];
-                string ownXml = TransformIntoXmlString(createCds());
-
-                XDocument lfmDoc = XDocument.Parse(response);
-                XDocument ownDoc = XDocument.Parse(ownXml);
-
-                var query =
-                  from tr in lfmDoc.Descendants("track")
-                  where !(from tr1 in cd
-                          select tr1.Title)
-                    .Contains(tr.Element("name").Value) && (
-                    from tr1 in cd
-                    select tr1.Artist)
-                    .Contains(tr.Element("artist").Element("name").Value)
-                  select tr;
-
-
-                foreach (XElement x in query)
-                {
-                    Console.WriteLine(x);
-                }
-
-
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("Message :{0} ", e);
-            }
-
-        }
-
-
-
-        public async static void compareXMLDocs()
-        {
             HttpClient client = new();
             try
             {
                 String response = await client.GetStringAsync(@"http://ws.audioscrobbler.com/2.0/?method=album.getinfo&album=awake&artist=Dream%20Theater&api_key=b5cbf8dcef4c6acfc5698f8709841949");
-                
-                List<Cd> cds = createCds();
-                string ownXml = TransformIntoXmlString(cds);
+
+                Cd cd = createCd();
 
                 XDocument lfmDoc = XDocument.Parse(response);
-                XDocument ownDoc = XDocument.Parse(ownXml);
 
                 var query =
-                    from track in lfmDoc.Descendants("tracks").Elements()
-                     from ownTrack in ownDoc.Descendants("tracks").Elements()
-                    where track.Element("name").Value != ownTrack.Element("name").Value
-                    select track;
-                XElement selectedTracks = query.SingleOrDefault();
+                    from tr in lfmDoc.Descendants("track")
+                    where !(from tr1 in cd
+                            select tr1.Title)
+                      .Contains(tr.Element("name").Value) && (
+                      from tr1 in cd
+                      select tr1.Artist)
+                      .Contains(tr.Element("artist").Element("name").Value)
+                    select new Track
+                    {
+                        Artist = tr.Element("artist").Element("name").Value,
+                        Title = tr.Element("name").Value,
+                        Length = TimeSpan.FromSeconds(int.Parse(tr.Element("duration").Value))
+                    };
+
+
+                foreach (Track x in query)
+                {
+                    cd.Add(x);
+                }
+                Console.WriteLine(TransformIntoXmlString(cd));
+
 
             }
             catch (HttpRequestException e)
             {
                 Console.WriteLine("Message :{0} ", e);
             }
+
         }
 
-        public static string TransformIntoXmlString(List<Cd> cds)
+
+
+        public static string TransformIntoXmlString(Cd cd)
         {
             var cdXml = new XDocument();
             var rootElem = new XElement("CDs");
             cdXml.Add(rootElem);
-            foreach (Cd cd in cds)
-            {
+           
+            
                 var cdElem = new XElement("cd");
                 var cdTitleElem = new XAttribute("title", cd.Title);
                 var cdArtistElem = new XAttribute("artist", cd.Artist);
@@ -144,23 +101,22 @@ namespace Linq2Xml
                 
                 cdElem.Add(tracksElem);
                 rootElem.Add(cdElem);
-            }
             return cdXml.ToString();
         }
 
-        public static List<Cd> createCds()
+        public static Cd createCd()
         {
-            Cd testCD = new Cd 
+            Cd cd = new Cd 
             {
                 new Track { Title = "6:00", Artist = "Dream Theater", Length = new TimeSpan(0, 5, 31)},
                 new Track { Title = "Innocence Faded", Artist = "Dream Theater", Length = new TimeSpan(0, 5, 34)},
                 new Track { Title = "Scarred", Artist = "Dream Theater", Length = new TimeSpan(0, 10, 59)}
             };
-            testCD.Title = "Awake";
-            testCD.Artist = "Dream Theater";
+            cd.Title = "Awake";
+            cd.Artist = "Dream Theater";
 
-            List<Cd> cds = new() { testCD };
-            return cds;
+            
+            return cd;
         }
     }  
 }
