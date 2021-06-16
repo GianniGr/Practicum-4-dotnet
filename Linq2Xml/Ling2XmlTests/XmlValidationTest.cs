@@ -7,14 +7,14 @@ namespace Ling2XmlTests
 {
     public class Tests
     {
-        private readonly Cd _cd = new () { Title = "MyAwesomeCd" };
+        private readonly Cd _cd = new () { Title = "MyAwesomeCd", Artist="AwesomeArtist" };
         
         [SetUp]
         public void Setup()
         {
-            _cd.Add(new Track { Title = "AwesomeTitle1", Artist = "AwesomeArtist1", Length = TimeSpan.Zero });
-            _cd.Add(new Track { Title = "AwesomeTitle2", Artist = "AwesomeArtist2", Length = TimeSpan.Zero });
-            _cd.Add(new Track { Title = "AwesomeTitle3", Artist = "AwesomeArtist3", Length = TimeSpan.Zero });
+            _cd.Add(new Track { Title = "AwesomeTitle1", Artist = "AwesomeArtist", Length = TimeSpan.Zero });
+            _cd.Add(new Track { Title = "AwesomeTitle2", Artist = "AwesomeArtist", Length = TimeSpan.Zero });
+            _cd.Add(new Track { Title = "AwesomeTitle3", Artist = "AwesomeArtist", Length = TimeSpan.Zero });
         }
 
         [TearDown]

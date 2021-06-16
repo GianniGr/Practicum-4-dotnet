@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+//testen laten slagen
 namespace Linq2Xml
 {
     public class Track
@@ -25,6 +26,7 @@ namespace Linq2Xml
         public static async Task Main()
         {
             string testXml = TransformIntoXmlString(createCd());
+            Console.WriteLine("dit is het aanmaken");
             Console.WriteLine(testXml);
             Console.WriteLine("\n");
 
