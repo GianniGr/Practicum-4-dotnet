@@ -40,29 +40,25 @@ namespace Linq2Xml
 
                 XDocument lfmDoc = XDocument.Parse(response);
 
-                var query =
-                    from tr in lfmDoc.Descendants("track")
-                    where !(from tr1 in cd
-                            select tr1.Title)
-                      .Contains(tr.Element("name").Value) && (
-                      from tr1 in cd
-                      select tr1.Artist)
-                      .Contains(tr.Element("artist").Element("name").Value)
+                var missingTracks =
+                    from lfmTrack in lfmDoc.Descendants("track")
+                    where 
+                        !(
+                            from ownTrack in cd
+                            select ownTrack.Title
+                        ).Contains(lfmTrack.Element("name").Value) 
                     select new Track
                     {
-                        Artist = tr.Element("artist").Element("name").Value,
-                        Title = tr.Element("name").Value,
-                        Length = TimeSpan.FromSeconds(int.Parse(tr.Element("duration").Value))
+                        Artist = lfmTrack.Element("artist").Element("name").Value,
+                        Title = lfmTrack.Element("name").Value,
+                        Length = TimeSpan.FromSeconds(int.Parse(lfmTrack.Element("duration").Value))
                     };
 
-
-                foreach (Track x in query)
+                foreach (Track track in missingTracks)
                 {
-                    cd.Add(x);
+                    cd.Add(track);
                 }
                 Console.WriteLine(TransformIntoXmlString(cd));
-
-
             }
             catch (HttpRequestException e)
             {
